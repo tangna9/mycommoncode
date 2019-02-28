@@ -1,5 +1,6 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Author:TangNa
 
 import MySQLdb
 import sys
@@ -9,14 +10,13 @@ class MySQL(object):
     '''
     MySQL
     '''
-    conn = ''
-    cursor = ''
+
     def __init__(self, **MYSQL_DB):
 
         """MySQL Database initialization """
         try:
             self.conn = MySQLdb.connect(host=MYSQL_DB['host'],
-                                        port=MYSQL_DB['port'],
+                                        port=int(MYSQL_DB['port']),
                                         user=MYSQL_DB['user'],
                                         passwd=MYSQL_DB['password'],
                                         db=MYSQL_DB['db'],
@@ -46,17 +46,20 @@ class MySQL(object):
         """ Return the result after executing SQL statement """
         return self.cursor.fetchall()
 
+    def query(self, sql):
+        """  Execute SQL statement """
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
     def __del__(self):
         """ Terminate the connection """
-        self.cursor.close()
         self.conn.close()
-
+        self.cursor.close()
 
 #test
-# if __name__ == '__main__':
-#
-#     mysql = MySQL(**MYSQL_ADSMART)
-#     mysql.query('select category_id from ad_provider where shop_id="5384"')
-#     result = mysql.showall
-#     print len(result)
-#     print result
+if __name__ == '__main__':
+
+    mysqltest = MySQL(**MYSQL_DB)
+    result = mysqltest.query('select * from hug_parameter limit 1')
+    print len(result)
+    print result
